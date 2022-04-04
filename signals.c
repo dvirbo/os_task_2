@@ -27,7 +27,7 @@ void sig_handler(int signum)
 	case SIGUSR1:
 		printf("I am in SIGUSR1\n");
 		fflush(stdout);
-		k = i/j;
+		k = i / j;
 		break;
 
 	case SIGFPE: // div in zero
@@ -37,56 +37,55 @@ void sig_handler(int signum)
 	}
 }
 
-
 int main(int argc, char *argv[])
 {
-    int status;
-    int pid = fork();
-    if (pid == -1)
-    {
-        return 1;
-    }
+	int status;
+	int pid = fork();
+	if (pid == -1)
+	{
+		return 1;
+	}
 
-    if (pid == 0)
-    { // child pros
-        while (1)
-        {
-            printf("os course is so fun\n");
-            usleep(50000);
-        }
-    }
-    else
-    {
-        kill(pid, SIGSTOP);
-        int t;
-        do
-        {
-            printf("Time in seconds for execution: ");
-            scanf("%d", &t);
+	if (pid == 0)
+	{ // child pros
+		while (1)
+		{
+			printf("os course is so fun\n");
+			usleep(50000);
+		}
+	}
+	else
+	{
+		kill(pid, SIGSTOP);
+		int t;
+		do
+		{
+			printf("insert 0 to exit..\n");
+			printf("Time in seconds for execution:");
 
-            if (t > 0)
-            {
-                kill(pid, SIGCONT);
-                sleep(t);
-                kill(pid, SIGSTOP);
-            }
-        } while (t > 0);
+			scanf("%d", &t);
 
-        kill(pid, SIGKILL);
-        wait(NULL);
-        
-    }
-    
-    signal(SIGCHLD, sig_handler);
+			if (t > 0)
+			{
+				kill(pid, SIGCONT);
+				sleep(t);
+				kill(pid, SIGSTOP);
+			}
+		} while (t > 0);
+
+		kill(pid, SIGKILL);
+		wait(NULL);
+	}
+
+	signal(SIGCHLD, sig_handler);
 	signal(SIGUSR1, sig_handler);
 	signal(SIGUSR2, sig_handler);
 	signal(SIGFPE, sig_handler);
 	if (!(fork()))
 	{
-		perror("can't fork");
 		exit(1);
 	}
 	wait(NULL);
 
-    return 0;
+	return 0;
 }
